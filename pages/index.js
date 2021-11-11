@@ -1,7 +1,5 @@
-import Head from "next/head"
-import Link from "next/link"
-import AppLayout from "@components/Applayout"
-import styles from "@styles/Home.module.css"
+import Head from "next/head";
+import AppLayout from "@components/Applayout";
 
 export default function Home() {
   return (
@@ -12,15 +10,23 @@ export default function Home() {
       </Head>
 
       <AppLayout>
-        <h1 className={styles.title}>
+        <h1>
           <a href="https://nextjs.org">Devter</a>
         </h1>
-        <nav>
-          <Link href="/timeline">
-            <a className={styles.link}>timeline</a>
-          </Link>
-        </nav>
       </AppLayout>
+
+      <style jsx>{`
+        .title {
+          text-align: center;
+          font-size: 48px;
+        }
+
+        .title a,
+        .link {
+          color: #09f;
+          text-decoration: none;
+        }
+      `}</style>
     </>
   );
 }
