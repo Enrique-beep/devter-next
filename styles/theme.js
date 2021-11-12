@@ -9,6 +9,6 @@ export const fonts = {
 export const colors = {
   white: '#ffffff',
   black: '#000000',
-  primary: '#0099ff',
-  secondary: '#1c5480',
+  primary: '#0049ff',
+  secondary: '#09f',
 }

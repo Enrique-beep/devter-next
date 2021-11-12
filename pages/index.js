@@ -2,12 +2,15 @@ import Head from "next/head";
 
 import { useEffect, useState } from "react";
 
-import { colors } from "@styles/theme";
 import AppLayout from "@components/Applayout";
+import Avatar from "@components/Avatar";
 import Button from "@components/Button";
 import GitHub from "@components/Icons/GitHub";
+import Logo from "@components/Icons/Logo";
 
-import { loginWithGitHub, onAuthStateChanged } from "../firebase/client";
+import { colors } from "@styles/theme";
+
+import { loginWithGitHub, onAuthStateChanged } from "@firebase/client";
 
 export default function Home() {
   const [user, setUser] = useState(undefined);
@@ -33,7 +36,7 @@ export default function Home() {
 
       <AppLayout>
         <section>
-          <img src="/devter-logo.png" alt="logo" />
+          <Logo width="100" />
           <h1>Devter</h1>
           <h2>
             Talk about developmet <br /> with developers 👩‍💻👨‍💻
@@ -47,8 +50,11 @@ export default function Home() {
             )}
             {user && user.avatar && (
               <div>
-                <img src={user.avatar} alt="avatar" />
-                <strong>{user.username}</strong>
+                <Avatar
+                  src={user.avatar}
+                  alt={user.username}
+                  text={user.username}
+                />
               </div>
             )}
           </div>
@@ -72,13 +78,14 @@ export default function Home() {
         }
 
         h1 {
-          color: ${colors.secondary};
+          color: ${colors.primary};
           font-weight: 800;
+          font-size: 32px;
           margin-botoom: 16px;
         }
 
         h2 {
-          color: ${colors.primary};
+          color: ${colors.secondary};
           font-size: 21px;
           margin: 0;
         }

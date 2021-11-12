@@ -28,17 +28,14 @@ const mapUserFromFirebaseAuth = (user) => {
 
 export const onAuthStateChanged = (onChange) => {
   return $auth.onAuthStateChanged(auth, (user) => {
-    if (!user) return;
-    const normalizedUser = mapUserFromFirebaseAuth(user);
+    const normalizedUser = user ? mapUserFromFirebaseAuth(user) : null;
     onChange(normalizedUser);
   });
 };
 
 export const loginWithGitHub = async () => {
   const githubProvider = new $auth.GithubAuthProvider();
-  return $auth
-    .signInWithPopup(auth, githubProvider)
-    .then(({ user }) => {
-      mapUserFromFirebaseAuth(user);
-    });
+  return $auth.signInWithPopup(auth, githubProvider).then(({ user }) => {
+    mapUserFromFirebaseAuth(user);
+  });
 };
