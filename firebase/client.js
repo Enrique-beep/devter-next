@@ -1,5 +1,6 @@
 import * as $app from "firebase/app";
 import * as $auth from "firebase/auth";
+import * as $firestore from "firebase/firestore";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -14,15 +15,18 @@ const firebaseConfig = {
 
 !$app.getApps().length && $app.initializeApp(firebaseConfig);
 
+const db = $firestore.getFirestore();
+
 const auth = $auth.getAuth();
 
 const mapUserFromFirebaseAuth = (user) => {
-  const { photoURL, displayName, email } = user;
+  const { photoURL, displayName, email, uid } = user;
 
   return {
     avatar: photoURL,
     username: displayName,
     email,
+    uid,
   };
 };
 
@@ -38,4 +42,27 @@ export const loginWithGitHub = async () => {
   return $auth.signInWithPopup(auth, githubProvider).then(({ user }) => {
     mapUserFromFirebaseAuth(user);
   });
+};
+
+export const addDevit = ({ avatar, content, userId, username }) => {
+  return writeDevitCollection({
+    avatar,
+    content,
+    userId,
+    username,
+    createdAt: $firestore.Timestamp.fromDate(new Date()),
+    likesCount: 0,
+    sharedCount: 0,
+  });
+};
+
+const writeDevitCollection = async (devit) => {
+  try {
+    return await $firestore.addDoc(
+      $firestore.collection(db, "devits"),
+      devit
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
