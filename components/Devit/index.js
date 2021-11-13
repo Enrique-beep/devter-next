@@ -1,6 +1,7 @@
 import Avatar from "@components/Avatar";
 
-export default function Devit({ id, avatar, username, message }) {
+export default function Devit({ uid, avatar, username, content, createdAt }) {
+  console.log(createdAt);
   return (
     <>
       <article>
@@ -10,7 +11,9 @@ export default function Devit({ id, avatar, username, message }) {
 
         <section>
           <strong>{username}</strong>
-          <p>{message}</p>
+          <span> &bull; </span>
+          <span>{createdAt}</span>
+          <p>{content}</p>
         </section>
       </article>
 

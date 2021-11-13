@@ -58,11 +58,32 @@ export const addDevit = ({ avatar, content, userId, username }) => {
 
 const writeDevitCollection = async (devit) => {
   try {
-    return await $firestore.addDoc(
-      $firestore.collection(db, "devits"),
-      devit
-    );
+    return await $firestore.addDoc($firestore.collection(db, "devits"), devit);
   } catch (error) {
     console.log(error);
   }
+};
+
+export const fetchLatestDevits = () => {
+  return $firestore
+    .getDocs($firestore.collection(db, "devits"))
+    .then(({ docs }) => {
+      return docs.map((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        const { createdAt } = data;
+
+        const date = new Date(createdAt.seconds * 1000);
+        const normalizedCreatedAt = new Intl.DateTimeFormat("es-ES").format(
+          date
+        );
+
+        return {
+          id,
+          ...data,
+          createdAt: normalizedCreatedAt,
+        };
+      });
+    })
+    .catch((err) => console.log(err));
 };

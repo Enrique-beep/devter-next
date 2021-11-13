@@ -43,7 +43,7 @@ export default function ComposeDevit() {
       });
   };
 
-  const isButtonDisabled = !message.length && status === COMPOSE_STATES.LOADING;
+  const isButtonDisabled = !message.length || status === COMPOSE_STATES.LOADING;
 
   return (
     <>
