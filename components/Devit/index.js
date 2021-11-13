@@ -1,4 +1,5 @@
 import Avatar from "@components/Avatar";
+import styles from "./styles";
 
 export default function Devit({ uid, avatar, username, content, createdAt }) {
   console.log(createdAt);
@@ -17,22 +18,7 @@ export default function Devit({ uid, avatar, username, content, createdAt }) {
         </section>
       </article>
 
-      <style jsx>{`
-        article {
-          border-bottom: 2px solid #eee;
-          display: flex;
-          padding: 10px 15px;
-        }
-
-        div {
-          padding-right: 10px;
-        }
-
-        p {
-          line-height: 1.3125;
-          margin: 0;
-        }
-      `}</style>
+      <style jsx>{styles}</style>
     </>
   );
 }
