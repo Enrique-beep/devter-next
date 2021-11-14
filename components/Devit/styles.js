@@ -15,4 +15,9 @@ export default css`
     line-height: 1.3125;
     margin: 0;
   }
+
+  span {
+    color: #555;
+    font-size: 14px;
+  }
 `;

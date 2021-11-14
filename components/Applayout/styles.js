@@ -40,6 +40,8 @@ export default css`
   }
 
   main {
+    display: flex;
+    flex-direction: column;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 10px 25px ${boxShadow};
