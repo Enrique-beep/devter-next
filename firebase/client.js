@@ -1,6 +1,7 @@
 import * as $app from "firebase/app";
 import * as $auth from "firebase/auth";
 import * as $firestore from "firebase/firestore";
+import * as $cursor from "firebase/storage";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -16,7 +17,6 @@ const firebaseConfig = {
 !$app.getApps().length && $app.initializeApp(firebaseConfig);
 
 const db = $firestore.getFirestore();
-
 const auth = $auth.getAuth();
 
 const mapUserFromFirebaseAuth = (user) => {
@@ -64,7 +64,7 @@ const writeDevitCollection = async (devit) => {
   }
 };
 
-export const fetchLatestDevits = () => {
+export const fetchLatestDevits = async () => {
   return $firestore
     .getDocs($firestore.collection(db, "devits"))
     .then(({ docs }) => {
@@ -73,17 +73,25 @@ export const fetchLatestDevits = () => {
         const id = doc.id;
         const { createdAt } = data;
 
-        const date = new Date(createdAt.seconds * 1000);
-        const normalizedCreatedAt = new Intl.DateTimeFormat("es-ES").format(
-          date
-        );
-
         return {
           id,
           ...data,
-          createdAt: normalizedCreatedAt,
+          createdAt: +createdAt.toDate(),
         };
       });
     })
     .catch((err) => console.log(err));
 };
+
+// TODO: create the task on Firebase
+export const uploadImage = async (file) => {
+  try {
+    const storage = $cursor.getStorage();
+    const ref = $cursor.ref(storage, `images/${file.name}`);
+    const result = await $cursor.uploadBytes(ref, file);
+    
+    return result;
+  } catch (e) {
+    console.log(e);
+  }
+}

@@ -1,8 +1,14 @@
+import Head from "next/head";
+import Link from "next/link";
+
 import { useState, useEffect } from "react";
 import useUser from "@hooks/useUser";
 
 import AppLayout from "@components/Applayout";
 import Devit from "@components/Devit";
+import Home from "@components/Icons/Home";
+import Search from "@components/Icons/Search";
+import Create from "@components/Icons/Create";
 
 import { fetchLatestDevits } from "@firebase/client";
 
@@ -21,6 +27,10 @@ export default function HomePage() {
 
   return (
     <>
+      <Head>
+        <title>Home / Devter 🐤</title>
+      </Head>
+
       <AppLayout>
         <header>
           <h2>Inicio</h2>
@@ -39,7 +49,17 @@ export default function HomePage() {
           ))}
         </section>
 
-        <nav></nav>
+        <nav>
+          <Link href="/home">
+            <a><Home width={32} height={32} stroke="#09f" /></a>
+          </Link>
+          <Link href="/search">
+            <a><Search width={32} height={32} stroke="#09f" /></a>
+          </Link>
+          <Link href="/compose/devit">
+            <a><Create width={32} height={32} stroke="#09f" /></a>
+          </Link>
+        </nav>
       </AppLayout>
 
       <style jsx>{styles}</style>
