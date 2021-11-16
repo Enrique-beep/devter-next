@@ -1,7 +1,4 @@
-import * as $app from "firebase/app";
-import * as $auth from "firebase/auth";
-import * as $firestore from "firebase/firestore";
-import * as $cursor from "firebase/storage";
+import * as firebase from "firebase";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -14,10 +11,9 @@ const firebaseConfig = {
   measurementId: "G-6R44Z7G1SX",
 };
 
-!$app.getApps().length && $app.initializeApp(firebaseConfig);
+!firebase.apps.length && firebase.initializeApp(firebaseConfig);
 
-const db = $firestore.getFirestore();
-const auth = $auth.getAuth();
+const db = firebase.firestore();
 
 const mapUserFromFirebaseAuth = (user) => {
   const { photoURL, displayName, email, uid } = user;
@@ -31,42 +27,35 @@ const mapUserFromFirebaseAuth = (user) => {
 };
 
 export const onAuthStateChanged = (onChange) => {
-  return $auth.onAuthStateChanged(auth, (user) => {
-    const normalizedUser = user ? mapUserFromFirebaseAuth(user) : null;
+  return firebase.auth().onAuthStateChanged((user) => {
+    const normalizedUser = user ? mapUserFromFirebaseAuth(user): null;
+
     onChange(normalizedUser);
   });
 };
 
 export const loginWithGitHub = async () => {
-  const githubProvider = new $auth.GithubAuthProvider();
-  return $auth.signInWithPopup(auth, githubProvider).then(({ user }) => {
-    mapUserFromFirebaseAuth(user);
-  });
+  const githubProvider = new firebase.auth.GithubAuthProvider();
+  return firebase.auth().signInWithPopup(githubProvider);
 };
 
 export const addDevit = ({ avatar, content, userId, username }) => {
-  return writeDevitCollection({
+  return db.collection("devits").add({
     avatar,
     content,
     userId,
     username,
-    createdAt: $firestore.Timestamp.fromDate(new Date()),
+    createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
     likesCount: 0,
-    sharedCount: 0,
+    sharedCount: 0,  
   });
 };
 
-const writeDevitCollection = async (devit) => {
-  try {
-    return await $firestore.addDoc($firestore.collection(db, "devits"), devit);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const fetchLatestDevits = async () => {
-  return $firestore
-    .getDocs($firestore.collection(db, "devits"))
+  return db
+    .collection("devits")
+    .orderBy("createdAt", "desc")
+    .get()
     .then(({ docs }) => {
       return docs.map((doc) => {
         const data = doc.data();
@@ -74,24 +63,17 @@ export const fetchLatestDevits = async () => {
         const { createdAt } = data;
 
         return {
-          id,
           ...data,
+          id,
           createdAt: +createdAt.toDate(),
         };
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err));  
 };
 
-// TODO: create the task on Firebase
 export const uploadImage = async (file) => {
-  try {
-    const storage = $cursor.getStorage();
-    const ref = $cursor.ref(storage, `images/${file.name}`);
-    const result = await $cursor.uploadBytes(ref, file);
-    
-    return result;
-  } catch (e) {
-    console.log(e);
-  }
+  const ref = firebase.storage().ref(`images/${file.name}`);
+  const task = ref.put(file);
+  return task;
 }

@@ -1,9 +1,10 @@
 import Head from "next/head";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUser from "@hooks/useUser";
 
 import AppLayout from "@components/Applayout";
+import Avatar from "@components/Avatar";
 import Button from "@components/Button";
 
 import { addDevit, uploadImage } from "@firebase/client";
@@ -25,14 +26,28 @@ const DRAG_IMAGE_STATES = {
 }
 
 export default function ComposeDevit() {
-  const user = useUser();
-  const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN);
   const [message, setMessage] = useState("");
-  const router = useRouter();
-
+  const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN);
+  
   const [drag, setDrag] = useState(DRAG_IMAGE_STATES.NONE);
   const [task, setTask] = useState(null);
   const [imgURL, setImgURL] = useState(null);
+
+  const user = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (task) {
+      const onProgress = () => {}
+      const onError = () => {}
+      const onComplete = () => {
+        console.log("onComplete");
+        task.snapshot.ref.getDownloadURL().then(setImgURL);
+      }
+
+      task.on("state_changed", onProgress, onError, onComplete);
+    }
+  }, [task]);
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -67,15 +82,13 @@ export default function ComposeDevit() {
     setDrag(DRAG_IMAGE_STATES.NONE);
   }
 
-  const handleDrop = async (e) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setDrag(DRAG_IMAGE_STATES.NONE);
     const file = e.dataTransfer.files[0];
 
-    // TODO: Create the task
-
-    const task = await uploadImage(file);
-    console.log(task);
+    const task = uploadImage(file);
+    setTask(task);
   }
 
   const isButtonDisabled = !message.length || status === COMPOSE_STATES.LOADING;
@@ -94,7 +107,14 @@ export default function ComposeDevit() {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             placeholder="What's happening?"
+            value={message}
           ></textarea>
+          {imgURL && (
+            <section className="remove-img">
+              <button onClick={() => setImgURL(null)}>&times;</button>
+              <img src={imgURL} />
+            </section>
+          )}
           <div>
             <Button disabled={isButtonDisabled}>Devit</Button>
           </div>
@@ -106,19 +126,54 @@ export default function ComposeDevit() {
           padding: 15px;
         }
 
+        .avatar-container {
+          padding-top: 20px;
+          padding-left: 10px;
+        }
+
+        button {
+          background: rgba(0, 0, 0, 0.3);
+          border: 0;
+          border-radius: 999px;
+          color: #fff;
+          font-size: 24px;
+          width: 32px;
+          height: 32px;
+          top: 15px;
+          position: absolute;
+          right: 15px;
+        }
+
+        .form-container {
+          align-items: flex-start;
+          display: flex;
+        }
+
+        .remove-img {
+          position: relative;
+        }
+
         form {
           margin: 10px;
         }
 
-        textarea {
-          border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER ? '3px dashed #09f' : '3px solid transparent'};
+        img {
           border-radius: 10px;
-          padding: 15px;
+          height: auto;
+          width: 100%;
+        }
+
+        textarea {
+          border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER 
+            ? '3px dashed #09f' 
+            : '3px solid transparent'};
+          border-radius: 10px;
           font-size: 21px;
           min-height: 200px;
+          padding: 15px;
+          outline: none;
           resize: none;
           width: 100%;
-          outline: none;
         }
       `}</style>
     </>
