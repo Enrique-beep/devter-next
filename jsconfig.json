@@ -6,6 +6,7 @@
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@firebase/*": ["firebase/*"],
+      "@constants/*": ["constants/*"]
     }
   }
 }
