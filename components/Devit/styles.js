@@ -7,6 +7,13 @@ export default css`
     padding: 10px 15px;
   }
 
+  img {
+    border-radius: 10px;
+    height: auto;
+    width: 100%;
+    margin-top: 10px;
+  }
+
   div {
     padding-right: 10px;
   }

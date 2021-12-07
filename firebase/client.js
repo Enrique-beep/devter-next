@@ -39,10 +39,11 @@ export const loginWithGitHub = async () => {
   return firebase.auth().signInWithPopup(githubProvider);
 };
 
-export const addDevit = ({ avatar, content, userId, username }) => {
+export const addDevit = ({ avatar, content, img, userId, username }) => {
   return db.collection("devits").add({
     avatar,
     content,
+    img,
     userId,
     username,
     createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -72,7 +73,7 @@ export const fetchLatestDevits = async () => {
     .catch((err) => console.log(err));  
 };
 
-export const uploadImage = async (file) => {
+export const uploadImage = (file) => {
   const ref = firebase.storage().ref(`images/${file.name}`);
   const task = ref.put(file);
   return task;

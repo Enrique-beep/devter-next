@@ -23,12 +23,12 @@ const DRAG_IMAGE_STATES = {
   DRAG_OVER: 1,
   UPLOADING: 2,
   COMPLETE: 3,
-}
+};
 
 export default function ComposeDevit() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN);
-  
+
   const [drag, setDrag] = useState(DRAG_IMAGE_STATES.NONE);
   const [task, setTask] = useState(null);
   const [imgURL, setImgURL] = useState(null);
@@ -38,12 +38,11 @@ export default function ComposeDevit() {
 
   useEffect(() => {
     if (task) {
-      const onProgress = () => {}
-      const onError = () => {}
+      const onProgress = () => {};
+      const onError = () => {};
       const onComplete = () => {
-        console.log("onComplete");
         task.snapshot.ref.getDownloadURL().then(setImgURL);
-      }
+      };
 
       task.on("state_changed", onProgress, onError, onComplete);
     }
@@ -62,6 +61,7 @@ export default function ComposeDevit() {
       content: message,
       userId: user.uid,
       username: user.username,
+      img: imgURL,
     })
       .then(() => {
         router.push("/home");
@@ -75,12 +75,12 @@ export default function ComposeDevit() {
   const handleDragEnter = (e) => {
     e.preventDefault();
     setDrag(DRAG_IMAGE_STATES.DRAG_OVER);
-  }
+  };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
     setDrag(DRAG_IMAGE_STATES.NONE);
-  }
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -89,7 +89,7 @@ export default function ComposeDevit() {
 
     const task = uploadImage(file);
     setTask(task);
-  }
+  };
 
   const isButtonDisabled = !message.length || status === COMPOSE_STATES.LOADING;
 
@@ -100,6 +100,13 @@ export default function ComposeDevit() {
       </Head>
 
       <AppLayout>
+        <section className="form-container">
+          {user && (
+            <section className="avatar-container">
+              <Avatar src={user.avatar} />
+            </section>
+          )}
+        </section>
         <form onSubmit={handleSubmit}>
           <textarea
             onChange={handleChange}
@@ -164,9 +171,9 @@ export default function ComposeDevit() {
         }
 
         textarea {
-          border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER 
-            ? '3px dashed #09f' 
-            : '3px solid transparent'};
+          border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER
+            ? "3px dashed #09f"
+            : "3px solid transparent"};
           border-radius: 10px;
           font-size: 21px;
           min-height: 200px;
