@@ -7,6 +7,10 @@ export default css`
     padding: 10px 15px;
   }
 
+  article:hover {
+    background: #f5f8fa;
+  }
+
   img {
     border-radius: 10px;
     height: auto;
@@ -23,8 +27,13 @@ export default css`
     margin: 0;
   }
 
-  span {
+  span,
+  time {
     color: #555;
     font-size: 14px;
+  }
+
+  time:hover {
+    text-decoration: underline solid #555;
   }
 `;

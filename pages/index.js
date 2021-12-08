@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import useUser, { USER_STATES } from "@hooks/useUser";
 
-import AppLayout from "@components/Applayout";
 import Button from "@components/Button";
 import GitHub from "@components/Icons/GitHub";
 import Logo from "@components/Icons/Logo";
@@ -34,24 +33,22 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <AppLayout>
-        <section>
-          <Logo width="100" />
-          <h1>Devter</h1>
-          <h2>
-            Talk about developmet <br /> with developers 👩‍💻👨‍💻
-          </h2>
-          <div>
-            {user === USER_STATES.NOT_LOGGED && (
-              <Button onClick={handleClick}>
-                <GitHub width={24} height={24} fill={"#fff"} />
-                Login with GitHub
-              </Button>
-            )}
-            {user === USER_STATES.NOT_KNOWN && <span>Loading...</span>}
-          </div>
-        </section>
-      </AppLayout>
+      <section>
+        <Logo width="100" />
+        <h1>Devter</h1>
+        <h2>
+          Talk about developmet <br /> with developers 👩‍💻👨‍💻
+        </h2>
+        <div>
+          {user === USER_STATES.NOT_LOGGED && (
+            <Button onClick={handleClick}>
+              <GitHub width={24} height={24} fill={"#fff"} />
+              Login with GitHub
+            </Button>
+          )}
+          {user === USER_STATES.NOT_KNOWN && <span>Loading...</span>}
+        </div>
+      </section>
 
       <style jsx>{`
         img {

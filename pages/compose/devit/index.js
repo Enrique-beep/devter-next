@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import useUser from "@hooks/useUser";
 
-import AppLayout from "@components/Applayout";
 import Avatar from "@components/Avatar";
 import Button from "@components/Button";
 
@@ -99,34 +98,32 @@ export default function ComposeDevit() {
         <title>Devit / Devter 🐤</title>
       </Head>
 
-      <AppLayout>
-        <section className="form-container">
-          {user && (
-            <section className="avatar-container">
-              <Avatar src={user.avatar} />
-            </section>
-          )}
-        </section>
-        <form onSubmit={handleSubmit}>
-          <textarea
-            onChange={handleChange}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            placeholder="What's happening?"
-            value={message}
-          ></textarea>
-          {imgURL && (
-            <section className="remove-img">
-              <button onClick={() => setImgURL(null)}>&times;</button>
-              <img src={imgURL} />
-            </section>
-          )}
-          <div>
-            <Button disabled={isButtonDisabled}>Devit</Button>
-          </div>
-        </form>
-      </AppLayout>
+      <section className="form-container">
+        {user && (
+          <section className="avatar-container">
+            <Avatar src={user.avatar} />
+          </section>
+        )}
+      </section>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          onChange={handleChange}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          placeholder="What's happening?"
+          value={message}
+        ></textarea>
+        {imgURL && (
+          <section className="remove-img">
+            <button onClick={() => setImgURL(null)}>&times;</button>
+            <img src={imgURL} />
+          </section>
+        )}
+        <div>
+          <Button disabled={isButtonDisabled}>Devit</Button>
+        </div>
+      </form>
 
       <style jsx>{`
         div {
