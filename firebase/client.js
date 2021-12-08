@@ -28,7 +28,7 @@ const mapUserFromFirebaseAuth = (user) => {
 
 export const onAuthStateChanged = (onChange) => {
   return firebase.auth().onAuthStateChanged((user) => {
-    const normalizedUser = user ? mapUserFromFirebaseAuth(user): null;
+    const normalizedUser = user ? mapUserFromFirebaseAuth(user) : null;
 
     onChange(normalizedUser);
   });
@@ -48,33 +48,35 @@ export const addDevit = ({ avatar, content, img, userId, username }) => {
     username,
     createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
     likesCount: 0,
-    sharedCount: 0,  
+    sharedCount: 0,
   });
 };
 
-export const fetchLatestDevits = async () => {
+export const listenLastestDevits = (callback) => {
   return db
     .collection("devits")
     .orderBy("createdAt", "desc")
-    .get()
-    .then(({ docs }) => {
-      return docs.map((doc) => {
-        const data = doc.data();
-        const id = doc.id;
-        const { createdAt } = data;
+    .limit(20)
+    .onSnapshot(({ docs }) => {
+      const newDevits = docs.map(mapDevitFromFirebaseToDevitObject);
+      callback(newDevits);
+    });
+};
 
-        return {
-          ...data,
-          id,
-          createdAt: +createdAt.toDate(),
-        };
-      });
-    })
-    .catch((err) => console.log(err));  
+const mapDevitFromFirebaseToDevitObject = (doc) => {
+  const data = doc.data();
+  const id = doc.id;
+  const { createdAt } = data;
+
+  return {
+    ...data,
+    id,
+    createdAt: +createdAt.toDate(),
+  };
 };
 
 export const uploadImage = (file) => {
   const ref = firebase.storage().ref(`images/${file.name}`);
   const task = ref.put(file);
   return task;
-}
+};

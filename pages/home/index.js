@@ -9,7 +9,7 @@ import Home from "@components/Icons/Home";
 import Search from "@components/Icons/Search";
 import Create from "@components/Icons/Create";
 
-import { fetchLatestDevits } from "@firebase/client";
+import { listenLastestDevits } from "@firebase/client";
 
 import styles from "./styles";
 
@@ -18,10 +18,11 @@ export default function HomePage() {
   const user = useUser();
 
   useEffect(() => {
-    user &&
-      fetchLatestDevits()
-        .then(setTimeline)
-        .catch((err) => console.log(err));
+    let unsubscribe;
+    if (user) {
+      listenLastestDevits(setTimeline);
+    }
+    return () => unsubscribe && unsubscribe();
   }, [user]);
 
   return (
